@@ -1,0 +1,10 @@
+<div class="ph">
+  <div class="pt">ASK AI</div>
+  <div class="ps">Ask questions about your finances</div>
+</div>
+<div id="ai-chat" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;min-height:200px"></div>
+<div style="display:flex;gap:8px">
+  <textarea id="ai-input" class="txt-inp" placeholder="e.g. How much did I spend on groceries last month?" rows="2" style="flex:1;resize:vertical" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
+  <button class="btn btn-p" onclick="aiSend()" style="align-self:flex-end">Ask →</button>
+</div>
+<div style="font-size:12px;color:var(--text3);margin-top:6px">Tip: Ask about spending, categories, trends, or budget.</div>

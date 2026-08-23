@@ -1,0 +1,91 @@
+<div class="ph" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div><div class="pt">IMPORT &amp; SYNC</div><div class="ps" id="imp-data-status">Loading…</div></div>
+  <button class="btn btn-g" onclick="confirmClearData()" style="font-size:14px;padding:8px 14px;border-color:#ef5350;color:#ef5350">⚠ Clear all data</button>
+</div>
+
+<!-- Data health -->
+<div class="mbox" id="data-health-box" style="margin-bottom:14px">
+  <div class="mbox-title">Data status</div>
+  <div id="data-health-body" style="font-size:14px;line-height:2;font-family:var(--num)"></div>
+</div>
+
+<!-- Path warning -->
+<div style="background:#42a5f518;border:1px solid #42a5f5;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#90caf9;line-height:1.6">
+  <strong>⚠ Important:</strong> Always open from the same location in Chrome. Opening from a different path gives a blank database. Use the backup or GitHub sync below to protect your data.
+</div>
+
+<!-- Backup -->
+<div class="mbox" style="margin-bottom:14px">
+  <div class="mbox-title">💾 Backup &amp; Restore</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Export saves all your data to a JSON file. Import restores it.</div>
+  <div class="btn-row">
+    <button class="btn btn-p" onclick="exportJSON()">↓ Export backup</button>
+    <button class="btn btn-g" onclick="document.getElementById('json-inp').click()">↑ Import backup</button>
+    <input type="file" id="json-inp" accept=".json" style="display:none" onchange="importJSON(this)">
+  </div>
+</div>
+
+<!-- Entity selector -->
+<div class="mbox" style="margin-bottom:14px">
+  <div class="mbox-title">Account / Entity</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:10px">Select which account this file belongs to.</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <select id="imp-entity-sel" class="sel" style="flex:1;min-width:180px" onchange="_importEntityKey=this.value"></select>
+    <button class="btn btn-g" onclick="showPage('entities')" style="font-size:13px;padding:8px 14px">⚙ Manage</button>
+  </div>
+  <div id="imp-entity-info" style="margin-top:6px;font-size:13px;color:var(--text3)"></div>
+</div>
+
+<!-- File drop -->
+<div class="import-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+  <div style="font-size:34px;margin-bottom:10px">⬆</div>
+  <div style="font-size:16px;font-family:var(--num);margin-bottom:5px">DROP FILE HERE</div>
+  <div style="font-size:13px;color:var(--text2)">CSV · XLS · XLSX</div>
+</div>
+<input type="file" id="file-input" accept=".csv,.xls,.xlsx" onchange="handleFile(event)" style="display:none">
+
+<!-- Column mapping (shown after upload) -->
+<div id="map-section" style="display:none">
+  <div class="mbox"><div class="mbox-title">Map columns</div><div class="map-grid" id="map-grid"></div></div>
+  <div class="mbox" id="prev-box" style="display:none">
+    <div class="mbox-title">Preview</div>
+    <div id="prev-tbl" style="overflow-x:auto;font-size:12px;font-family:var(--num);color:var(--text2)"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-p" onclick="runImport()">Import &amp; Categorize</button>
+    <button class="btn btn-g" onclick="resetImport()">Cancel</button>
+  </div>
+  <div id="imp-status" style="margin-top:10px;font-size:13px;color:var(--text2);font-family:var(--num)"></div>
+</div>
+
+<hr style="border:none;border-top:1px solid var(--border);margin:24px 0">
+
+<!-- GitHub sync -->
+<div class="ph"><div class="pt">SYNC</div><div class="ps">GitHub — auto-pushes every change</div></div>
+
+<div class="mbox">
+  <div class="mbox-title">GitHub Token</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">
+    Stored only on this device. Syncs to private repo <strong style="color:var(--text)">EnoLackner/ledger-data</strong>. Auto-pushes 3 seconds after every change.
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <input type="password" id="gh-token-inp" class="txt-inp" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex:1;min-width:180px;margin-top:0">
+    <button class="btn btn-p" onclick="saveToken()">Save Token</button>
+  </div>
+  <div id="gh-token-status" style="margin-top:8px;font-size:12px;font-family:var(--num);color:var(--text3)"></div>
+</div>
+
+<div class="mbox">
+  <div class="mbox-title">Sync Status</div>
+  <div id="sync-detail" style="font-size:13px;color:var(--text2);font-family:var(--num);margin-bottom:12px">Configure token above to enable sync.</div>
+  <div class="btn-row">
+    <button class="btn btn-p" onclick="ghPush(true)">↑ Push to GitHub</button>
+    <button class="btn btn-g" onclick="ghPull(true)">↓ Pull from GitHub</button>
+  </div>
+</div>
+
+<div class="mbox" style="border-color:#5a4040">
+  <div class="mbox-title" style="color:#ef9a9a">Danger Zone</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Replace all local data with the GitHub version. Cannot be undone.</div>
+  <button class="btn btn-g" onclick="ghForceOverwrite()" style="border-color:#ef9a9a;color:#ef9a9a">↓ Overwrite local with GitHub</button>
+</div>
