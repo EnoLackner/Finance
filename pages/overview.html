@@ -1,0 +1,44 @@
+<button class="fullscreen-btn" onclick="toggleFullscreen('page-overview')" title="Fullscreen">⛶</button>
+<div class="ph">
+  <div class="pt" id="ov-title">OVERVIEW</div>
+  <div class="ps" id="ov-sub"></div>
+</div>
+<div id="ov-uncat-banner" style="display:none;margin-bottom:16px;padding:12px 16px;background:#f9a82518;border:1px solid #f9a825;border-radius:10px">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div>
+      <div id="ov-uncat-msg" style="font-size:14px;font-weight:600;color:#f9a825"></div>
+      <div id="ov-uncat-detail" style="font-size:12px;color:var(--text3);margin-top:2px"></div>
+    </div>
+    <button class="btn" onclick="startUncatReview()" style="border-color:#f9a825;color:#f9a825;padding:8px 16px;white-space:nowrap">Categorise →</button>
+  </div>
+</div>
+<div class="ov-top">
+  <div class="ov-ring-wrap">
+    <canvas id="ring-canvas" width="160" height="160"></canvas>
+    <div class="ov-ring-label">
+      <div class="ov-ring-amt" id="ring-amt">0,00</div>
+      <div class="ov-ring-lbl">spent</div>
+    </div>
+  </div>
+  <div class="card" id="card-left">
+    <div class="card-label">BUDGET LEFT</div>
+    <div class="card-val" id="card-left-val">—</div>
+    <div class="card-sub" id="card-left-sub">Set a budget</div>
+  </div>
+  <div class="card">
+    <div class="card-label">TOTAL SPENT</div>
+    <div class="card-val" id="card-spent">0,00 €</div>
+    <div class="card-sub" id="card-spent-sub">this period</div>
+  </div>
+  <div class="card">
+    <div class="card-label">INCOME</div>
+    <div class="card-val" id="card-income" style="color:#4fc3a1">0,00 €</div>
+    <div class="card-sub" id="card-income-sub"></div>
+  </div>
+</div>
+<div class="hist-bar-wrap" id="hist-bar-wrap"></div>
+<div id="cat-grid"></div>
+<div style="margin-top:28px">
+  <div class="mbox-title" style="margin-bottom:12px">AVG SPEND PER CATEGORY / MONTH</div>
+  <div id="averages-list"></div>
+</div>
