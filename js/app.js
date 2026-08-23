@@ -65,7 +65,7 @@ async function ghTestToken(){
   var tok=getToken();if(!tok)return;
   try{
     var r=await fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO,{headers:{'Authorization':'Bearer '+tok,'Accept':'application/vnd.github+json'}});
-    var el=document.getElementById('gh-token-status');if(el)el.textContent=r.ok?'Connected to EnoLackner/ledger-data':'Error '+r.status+' — check token';
+    var el=document.getElementById('gh-token-status');if(el){el.textContent=r.ok?'✓ Connected to EnoLackner/ledger-data':'Error '+r.status+' — check token';el.style.color=r.ok?'#4fc3a1':'#ef5350';}
     setSyncStatus(r.ok?'ok':'err',r.ok?'connected':'auth error');
   }catch(e){setSyncStatus('err','offline');}
 }
@@ -1861,6 +1861,58 @@ function setupAiPage(){
     var chat=document.getElementById('ai-chat');
     if(chat)chat.innerHTML='<div class="ai-msg ai-msg-bot">Hi! Ask me anything about your finances.</div>';
   }
+}
+
+function openAddCatModal(){
+  // Reset fields
+  var ni=document.getElementById('addcat-name');
+  if(ni)ni.value='';
+  buildIconGrid('addcat-icons','','addcatSelIcon');
+  buildColorGrid('addcat-colors','#4fc3a1','addcatSelColor');
+  _addcatIcon='basket';_addcatColor='#4fc3a1';
+  openModal('add-cat-modal');
+}
+var _addcatIcon='basket';
+var _addcatColor='#4fc3a1';
+function addcatSelIcon(el,ico){_addcatIcon=ico;buildIconGrid('addcat-icons',ico,'addcatSelIcon');}
+function addcatSelColor(el,col){_addcatColor=col;buildColorGrid('addcat-colors',col,'addcatSelColor');}
+
+function openMarkersModal(){
+  var overlay=document.getElementById('cat-edit-modal');
+  if(!overlay)return;
+  _cemeKey=null;
+  document.getElementById('cemeTitle').textContent='Select Category to Edit Markers';
+  document.getElementById('cemeIcon').textContent='';
+  document.getElementById('ceme-name').value='';
+  document.getElementById('ceme-icons').innerHTML='';
+  document.getElementById('ceme-colors').innerHTML='';
+  document.getElementById('ceme-markers').innerHTML='';
+  var btns=CATS.map(function(c){
+    return '<button onclick="openCatEdit(\'' +c.key+ '\')" style="padding:8px 14px;border-radius:8px;border:1px solid '+c.color+';background:'+c.color+'22;color:var(--text);cursor:pointer;font-size:14px">'+c.label+'</button>';
+  }).join('');
+  document.getElementById('ceme-delete-wrap').innerHTML='<div style="display:flex;flex-wrap:wrap;gap:8px">'+btns+'</div>';
+  openModal('cat-edit-modal');
+}
+
+function openCatEdit(key){
+  var c=catMeta(key);
+  _cemeKey=key;
+  document.getElementById('cemeTitle').textContent='Edit: '+c.label;
+  document.getElementById('cemeIcon').textContent=catIconEmoji(key);
+  document.getElementById('ceme-name').value=c.label;
+  buildIconGrid('ceme-icons',c.icon||'','cemeSelIcon');
+  buildColorGrid('ceme-colors',c.color,'cemeSelColor');
+  var markers=c.markers||[];
+  renderCemeMarkers(markers);
+  document.getElementById('ceme-delete-wrap').innerHTML=
+    '<button class="del-btn" onclick="deleteCat(\'' +key+ '\')">Delete category</button>';
+}
+
+function catIconEmoji(key){
+  var icons={'groceries':'🛒','dog':'🐾','health':'➕','shopping':'🛍','subscriptions':'📶',
+    'transport':'🚗','travel':'✈','rent':'🏠','loans':'💳','savings':'🏦',
+    'income':'💶','cash':'💵','other':'📦'};
+  return icons[key]||'📦';
 }
 
 function exportJSON(){
