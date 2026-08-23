@@ -278,41 +278,32 @@ function predMonth(mk){
 // ── NAV ──
 function showPage(id){
   _currentPage=id;
-  var content=document.getElementById('page-content');
-  if(!content)return;
-  // Update nav highlights
   document.querySelectorAll('.nav-item,.bn-item').forEach(function(el){
     el.classList.toggle('active', el.dataset.page===id);
   });
-  // Fetch page HTML and inject it
-  fetch('pages/'+id+'.html?v='+Date.now())
-    .then(function(r){return r.text();})
-    .then(function(html){
-      content.innerHTML=html;
-      // Scroll to top
-      window.scrollTo(0,0);
-      if(content.scrollTop!==undefined)content.scrollTop=0;
-      // Page-specific init
-      if(id==='overview'){renderOverview();renderUncatBanner();}
-      if(id==='budget'){updateCatStatus();renderBudgetPage();}
-      if(id==='transactions'){renderTransactions();}
-      if(id==='import'){
-        renderEntitySelector();renderDataHealth();
-        var tok=getToken();
-        var tst=document.getElementById('gh-token-status');
-        if(tst)tst.textContent=tok?'Token saved — enter a new one to replace it':'No token set yet';
-        var sd=document.getElementById('sync-detail');
-        if(sd&&tok)sd.textContent='Auto-sync active. Pushes 3s after every change.';
-        setupDropZone();
-      }
-      if(id==='entities'){renderEntitiesPage();}
-      if(id==='ai'){setupAiPage();}
-    })
-    .catch(function(e){
-      content.innerHTML='<div style="padding:40px;color:var(--text3)">Page not found: pages/'+id+'.html</div>';
-    });
+  document.querySelectorAll('.page-panel').forEach(function(el){
+    el.style.display='none';
+  });
+  var panel=document.getElementById('panel-'+id);
+  if(panel)panel.style.display='block';
+  window.scrollTo(0,0);
+  if(id==='overview'){renderOverview();renderUncatBanner();}
+  if(id==='budget'){updateCatStatus();renderBudgetPage();}
+  if(id==='transactions'){renderTransactions();}
+  if(id==='import'){
+    renderEntitySelector();renderDataHealth();
+    var tok=getToken();
+    var tst=document.getElementById('gh-token-status');
+    if(tst)tst.textContent=tok?'Token saved — enter a new one to replace it':'No token set yet';
+    var sd=document.getElementById('sync-detail');
+    if(sd&&tok)sd.textContent='Auto-sync active. Pushes 3s after every change.';
+    setupDropZone();
+  }
+  if(id==='entities'){renderEntitiesPage();}
+  if(id==='ai'){setupAiPage();}
 }
 var _currentPage='overview';
+'overview';
 
 // ── MONTH SELECTS ──
 function populateSels(){
