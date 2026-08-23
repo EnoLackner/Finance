@@ -46,7 +46,225 @@
 ════════════════════════════════════════ -->
 <div class="main" id="main-content">
   <!-- Pages are injected here by showPage() -->
-  <div id="page-content" class="page-content"></div>
+  <div id="main-panels">
+  <div class="page-panel" id="panel-overview" style="display:block">
+<button class="fullscreen-btn" onclick="toggleFullscreen('page-overview')" title="Fullscreen">⛶</button>
+<div class="ph">
+  <div class="pt" id="ov-title">OVERVIEW</div>
+  <div class="ps" id="ov-sub"></div>
+</div>
+<div id="ov-uncat-banner" style="display:none;margin-bottom:16px;padding:12px 16px;background:#f9a82518;border:1px solid #f9a825;border-radius:10px">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div>
+      <div id="ov-uncat-msg" style="font-size:14px;font-weight:600;color:#f9a825"></div>
+      <div id="ov-uncat-detail" style="font-size:12px;color:var(--text3);margin-top:2px"></div>
+    </div>
+    <button class="btn" onclick="startUncatReview()" style="border-color:#f9a825;color:#f9a825;padding:8px 16px;white-space:nowrap">Categorise →</button>
+  </div>
+</div>
+<div class="ov-top">
+  <div class="ov-ring-wrap">
+    <canvas id="ring-canvas" width="160" height="160"></canvas>
+    <div class="ov-ring-label">
+      <div class="ov-ring-amt" id="ring-amt">0,00</div>
+      <div class="ov-ring-lbl">spent</div>
+    </div>
+  </div>
+  <div class="card" id="card-left">
+    <div class="card-label">BUDGET LEFT</div>
+    <div class="card-val" id="card-left-val">—</div>
+    <div class="card-sub" id="card-left-sub">Set a budget</div>
+  </div>
+  <div class="card">
+    <div class="card-label">TOTAL SPENT</div>
+    <div class="card-val" id="card-spent">0,00 €</div>
+    <div class="card-sub" id="card-spent-sub">this period</div>
+  </div>
+  <div class="card">
+    <div class="card-label">INCOME</div>
+    <div class="card-val" id="card-income" style="color:#4fc3a1">0,00 €</div>
+    <div class="card-sub" id="card-income-sub"></div>
+  </div>
+</div>
+<div class="hist-bar-wrap" id="hist-bar-wrap"></div>
+<div id="cat-grid"></div>
+<div style="margin-top:28px">
+  <div class="mbox-title" style="margin-bottom:12px">AVG SPEND PER CATEGORY / MONTH</div>
+  <div id="averages-list"></div>
+</div>
+
+  </div>
+
+  <div class="page-panel" id="panel-budget" style="display:none">
+<button class="fullscreen-btn" onclick="toggleFullscreen('page-budget')" title="Fullscreen">⛶</button>
+
+<!-- Categorisation status bar (always visible) -->
+<div id="cat-status-bar" style="margin-bottom:14px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+  <div id="cat-status-text" style="font-size:14px;color:var(--text2)">Loading…</div>
+  <div id="cat-status-action"></div>
+</div>
+
+<!-- Review card (shown during active categorisation) -->
+<div id="review-section" style="display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <div class="pt">CATEGORISE</div>
+    <div id="rev-progress" style="font-size:13px;color:var(--text3);font-family:var(--num)"></div>
+  </div>
+  <div class="mbox" id="rev-card"></div>
+</div>
+
+<div class="ph" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div><div class="pt" id="bud-title">BUDGET</div><div class="ps" id="bud-sub">Current + 5 months ahead</div></div>
+  <button class="btn btn-g" onclick="confirmResetCats()" style="font-size:14px;padding:8px 14px;border-color:#ef5350;color:#ef5350">⚠ Reset categories</button>
+</div>
+
+<div id="bud-month-pills" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"></div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+  <div style="font-size:15px;font-weight:600;color:var(--text)">Monthly Budget</div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div style="font-size:13px;color:var(--text2)">Est. total: <span id="bud-total-auto" style="font-family:var(--num);font-weight:600"></span></div>
+    <button class="btn btn-g" onclick="openAddCatModal()" style="font-size:13px;padding:6px 12px">+ Category</button>
+    <button class="btn btn-g" onclick="openMarkersModal()" style="font-size:13px;padding:6px 12px;border-color:#f9a825;color:#f9a825">✕ Markers</button>
+  </div>
+</div>
+
+<div id="bud-cat-grid" class="cat-grid"></div>
+<div class="btn-row"><button class="btn btn-p" onclick="saveCatBuds()">Save Budget</button></div>
+
+  </div>
+
+  <div class="page-panel" id="panel-transactions" style="display:none">
+<div class="ph">
+  <div class="pt">TRANSACTIONS</div>
+  <div class="ps" id="tx-sub"></div>
+</div>
+<div id="tx-pills" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"></div>
+<div id="tx-list" class="tx-list"></div>
+
+  </div>
+
+  <div class="page-panel" id="panel-import" style="display:none">
+<div class="ph" style="display:flex;justify-content:space-between;align-items:flex-start">
+  <div><div class="pt">IMPORT &amp; SYNC</div><div class="ps" id="imp-data-status">Loading…</div></div>
+  <button class="btn btn-g" onclick="confirmClearData()" style="font-size:14px;padding:8px 14px;border-color:#ef5350;color:#ef5350">⚠ Clear all data</button>
+</div>
+
+<!-- Data health -->
+<div class="mbox" id="data-health-box" style="margin-bottom:14px">
+  <div class="mbox-title">Data status</div>
+  <div id="data-health-body" style="font-size:14px;line-height:2;font-family:var(--num)"></div>
+</div>
+
+<!-- Path warning -->
+<div style="background:#42a5f518;border:1px solid #42a5f5;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#90caf9;line-height:1.6">
+  <strong>⚠ Important:</strong> Always open from the same location in Chrome. Opening from a different path gives a blank database. Use the backup or GitHub sync below to protect your data.
+</div>
+
+<!-- Backup -->
+<div class="mbox" style="margin-bottom:14px">
+  <div class="mbox-title">💾 Backup &amp; Restore</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Export saves all your data to a JSON file. Import restores it.</div>
+  <div class="btn-row">
+    <button class="btn btn-p" onclick="exportJSON()">↓ Export backup</button>
+    <button class="btn btn-g" onclick="document.getElementById('json-inp').click()">↑ Import backup</button>
+    <input type="file" id="json-inp" accept=".json" style="display:none" onchange="importJSON(this)">
+  </div>
+</div>
+
+<!-- Entity selector -->
+<div class="mbox" style="margin-bottom:14px">
+  <div class="mbox-title">Account / Entity</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:10px">Select which account this file belongs to.</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <select id="imp-entity-sel" class="sel" style="flex:1;min-width:180px" onchange="_importEntityKey=this.value"></select>
+    <button class="btn btn-g" onclick="showPage('entities')" style="font-size:13px;padding:8px 14px">⚙ Manage</button>
+  </div>
+  <div id="imp-entity-info" style="margin-top:6px;font-size:13px;color:var(--text3)"></div>
+</div>
+
+<!-- File drop -->
+<div class="import-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+  <div style="font-size:34px;margin-bottom:10px">⬆</div>
+  <div style="font-size:16px;font-family:var(--num);margin-bottom:5px">DROP FILE HERE</div>
+  <div style="font-size:13px;color:var(--text2)">CSV · XLS · XLSX</div>
+</div>
+<input type="file" id="file-input" accept=".csv,.xls,.xlsx" onchange="handleFile(event)" style="display:none">
+
+<!-- Column mapping (shown after upload) -->
+<div id="map-section" style="display:none">
+  <div class="mbox"><div class="mbox-title">Map columns</div><div class="map-grid" id="map-grid"></div></div>
+  <div class="mbox" id="prev-box" style="display:none">
+    <div class="mbox-title">Preview</div>
+    <div id="prev-tbl" style="overflow-x:auto;font-size:12px;font-family:var(--num);color:var(--text2)"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-p" onclick="runImport()">Import &amp; Categorize</button>
+    <button class="btn btn-g" onclick="resetImport()">Cancel</button>
+  </div>
+  <div id="imp-status" style="margin-top:10px;font-size:13px;color:var(--text2);font-family:var(--num)"></div>
+</div>
+
+<hr style="border:none;border-top:1px solid var(--border);margin:24px 0">
+
+<!-- GitHub sync -->
+<div class="ph"><div class="pt">SYNC</div><div class="ps">GitHub — auto-pushes every change</div></div>
+
+<div class="mbox">
+  <div class="mbox-title">GitHub Token</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">
+    Stored only on this device. Syncs to private repo <strong style="color:var(--text)">EnoLackner/ledger-data</strong>. Auto-pushes 3 seconds after every change.
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <input type="password" id="gh-token-inp" class="txt-inp" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex:1;min-width:180px;margin-top:0">
+    <button class="btn btn-p" onclick="saveToken()">Save Token</button>
+  </div>
+  <div id="gh-token-status" style="margin-top:8px;font-size:12px;font-family:var(--num);color:var(--text3)"></div>
+</div>
+
+<div class="mbox">
+  <div class="mbox-title">Sync Status</div>
+  <div id="sync-detail" style="font-size:13px;color:var(--text2);font-family:var(--num);margin-bottom:12px">Configure token above to enable sync.</div>
+  <div class="btn-row">
+    <button class="btn btn-p" onclick="ghPush(true)">↑ Push to GitHub</button>
+    <button class="btn btn-g" onclick="ghPull(true)">↓ Pull from GitHub</button>
+  </div>
+</div>
+
+<div class="mbox" style="border-color:#5a4040">
+  <div class="mbox-title" style="color:#ef9a9a">Danger Zone</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Replace all local data with the GitHub version. Cannot be undone.</div>
+  <button class="btn btn-g" onclick="ghForceOverwrite()" style="border-color:#ef9a9a;color:#ef9a9a">↓ Overwrite local with GitHub</button>
+</div>
+
+  </div>
+
+  <div class="page-panel" id="panel-entities" style="display:none">
+<div class="ph">
+  <div class="pt">ENTITIES</div>
+  <div class="ps">Accounts, cards, people</div>
+</div>
+<div id="entities-list"></div>
+<div class="btn-row" style="margin-top:10px">
+  <button class="btn btn-p" onclick="openAddEntity()">+ Add Entity</button>
+</div>
+
+  </div>
+
+  <div class="page-panel" id="panel-ai" style="display:none">
+<div class="ph">
+  <div class="pt">ASK AI</div>
+  <div class="ps">Ask questions about your finances</div>
+</div>
+<div id="ai-chat" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;min-height:200px"></div>
+<div style="display:flex;gap:8px">
+  <textarea id="ai-input" class="txt-inp" placeholder="e.g. How much did I spend on groceries last month?" rows="2" style="flex:1;resize:vertical" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
+  <button class="btn btn-p" onclick="aiSend()" style="align-self:flex-end">Ask →</button>
+</div>
+<div style="font-size:12px;color:var(--text3);margin-top:6px">Tip: Ask about spending, categories, trends, or budget.</div>
+
+  </div>
+  </div>
 </div><!-- /main -->
 
 <!-- ════════════════════════════════════════
